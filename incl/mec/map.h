@@ -150,7 +150,7 @@ void map_put (MAP map, MAP_Hash hash, const void *p_val, usize val_size)
     {
       if (header->count >= header->capacity)
         {
-          $error_stack_push (error (ERROR_COLLECTION_FULL, ""));
+          $error_stack_push (error (ERROR_FULL, ""));
           return;
         }
 

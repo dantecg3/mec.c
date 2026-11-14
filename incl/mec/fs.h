@@ -253,14 +253,14 @@ FS_File fs_load_file (FS_Path path, MEM_Allocator alloc)
   STR_C path_c = str_c_new (path, s_context.temp_allocator);
   if (path_c == NULL)
     {
-      $error_stack_push (error (ERROR_STACK_OVERFLOW, "failed to allocate path_c in fs_load_file"));
+      $error_stack_push (error (ERROR_OUT_OF_MEMORY, "failed to allocate path_c in fs_load_file"));
       return (FS_File){ 0 };
     }
 
   FILE *f = fopen (path_c, "rb");
   if (f == NULL)
     {
-      $error_stack_push (error (ERROR_IO_DEVICE, "failed to open a file"));
+      $error_stack_push (error (ERROR_IO, "failed to open a file"));
       return (FS_File){ 0 };
     }
 
@@ -270,7 +270,7 @@ FS_File fs_load_file (FS_Path path, MEM_Allocator alloc)
 
   if (size < 0)
     {
-      $error_stack_push (error (ERROR_FILE_CORRUPTED, "failed to determine size of file"));
+      $error_stack_push (error (ERROR_EOF, "failed to determine size of file"));
       fclose (f);
       return (FS_File){ 0 };
     }
@@ -288,7 +288,7 @@ FS_File fs_load_file (FS_Path path, MEM_Allocator alloc)
 
   if (readed != (usize)size)
     {
-      $error_stack_push (error (ERROR_FILE_CORRUPTED, "failed to read the whole file"));
+      $error_stack_push (error (ERROR_BAD_FORMAT, "failed to read the whole file"));
       $mem_free (&buffer, alloc);
       return (FS_File){ 0 };
     }
