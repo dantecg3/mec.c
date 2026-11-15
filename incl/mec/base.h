@@ -100,6 +100,14 @@ $static_assert (sizeof (usize) == 8);
     }                                         \
   while (0)
 
+#define $trap(expr, msg)                       \
+  do                                           \
+    {                                          \
+      if (expr)                                \
+        $panic ("$require (" #expr "): " msg); \
+    }                                          \
+  while (0)
+
 static inline usize align_up (usize size, usize alignment)
 {
   return (size + alignment - 1) & ~(alignment - 1);
