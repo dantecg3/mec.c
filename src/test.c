@@ -15,6 +15,11 @@ static void colored_stdout_sink (void *context $unused, LOG_Level level, const c
   printf ("%s%s" ANSI_RESET "\n", LEVEL_COLORS[level], msg);
 }
 
+static inline void error_stack_sink (ERROR err)
+{
+  $error (ERR_FMT " $s", err.code, err.msg);
+}
+
 void examples (void)
 {
   // bitset example
@@ -237,7 +242,7 @@ void examples (void)
 
 int main (void)
 {
-  mec_init_context ();
+  mec_init_context (error_stack_sink);
   log_add_sink (&s_context.logger, colored_stdout_sink, NULL);
 
   examples ();

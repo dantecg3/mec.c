@@ -8,6 +8,7 @@
 
 typedef struct MEC_Context     MEC_Context;
 typedef struct MEC_Error_Stack MEC_Error_Stack;
+typedef void (*MEC_Error_Stack_Sink)(ERROR err);
 
 #define MEC_ERROR_STACK_CAPACITY 256
 struct MEC_Error_Stack
@@ -23,16 +24,18 @@ struct MEC_Context
   MEM_Allocator   temp_allocator;
   LOG_Logger      logger;
   MEC_Error_Stack error_stack;
+  MEC_Error_Stack_Sink error_stack_sink;
   uint64          thread_id;
 };
 
 extern $thread MEC_Context s_context;
 
-static inline void mec_init_context ()
+static inline void mec_init_context (MEC_Error_Stack_Sink errors_sink)
 {
   s_context.default_allocator = mem_default_allocator ();
   s_context.temp_allocator    = (MEM_Allocator){ 0 };
   s_context.error_stack       = (MEC_Error_Stack){ 0 };
+  s_context.error_stack_sink = errors_sink;
   s_context.thread_id         = thrd_current ();
 
   uint8 flags[$bitset (uint8, LOG_FLAGS)] = { 0 };
@@ -68,6 +71,15 @@ static inline $unused bool mec_pop_error (ERROR *out)
   return true;
 }
 
+static inline $unused void mec_drain_errors ()
+{
+  $assert (s_context.error_stack_sink != NULL, "");
+  
+  ERROR err = error_null ();
+  while (mec_pop_error (&err))
+    s_context.error_stack_sink (err);
+}
+
 #define $log(level, ...) log_fmt (&s_context.logger, level, $location (), __VA_ARGS__)
 #define $trace(...)      $log (LOG_TRACE, __VA_ARGS__)
 #define $debug(...)      $log (LOG_DEBUG, __VA_ARGS__)
@@ -78,6 +90,7 @@ static inline $unused bool mec_pop_error (ERROR *out)
 
 #define $error_stack_push(err) mec_push_error (err)
 #define $error_stack_pop(out)  mec_pop_error (out)
+#define $error_stack_drain(out)  do { mec_drain_errors () } while (0)
 
 #ifdef MEC_IMPL
 $thread MEC_Context s_context = { 0 };
