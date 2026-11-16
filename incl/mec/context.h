@@ -90,7 +90,7 @@ static inline $unused void mec_drain_errors ()
 
 #define $error_stack_push(err) mec_push_error (err)
 #define $error_stack_pop(out)  mec_pop_error (out)
-#define $error_stack_drain(out)  do { mec_drain_errors () } while (0)
+#define $error_stack_drain(out)  do { mec_drain_errors (); } while (0)
 
 #ifdef MEC_IMPL
 $thread MEC_Context s_context = { 0 };
