@@ -19,6 +19,7 @@ void  map_put (MAP map, MAP_Hash hash, const void *p_val, usize val_size);
 void *map_get (MAP map, MAP_Hash hash, usize val_size);
 usize map_count (MAP map);
 
+#define $map_new(T, capacity, alloc) map_new (sizeof (T), (capacity), alloc)
 #define $map_hash_str(str_view) map_hash ((const byte *)((str_view).data), (str_view).length)
 #define $map_put(map, hash, p_val)                                     \
   do                                                                   \
