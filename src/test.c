@@ -216,10 +216,10 @@ void examples (void)
   $debug ("p1 is absolute: %s", abs1 ? "true" : "false");
   $debug ("p2 is absolute: %s", abs2 ? "true" : "false");
 
+  FS_Path_Buffer proc_path      = fs_proc_path (s_context.default_allocator);
+  FS_Path        proc_directory = fs_path_parent (fs_path_from_buffer (proc_path));
   {
     $mem_scope_init (10 * MEM_KB, &s_context.temp_allocator);
-    FS_Path_Buffer proc_path      = fs_proc_path (s_context.default_allocator);
-    FS_Path        proc_directory = fs_path_parent (fs_path_from_buffer (proc_path));
 
     FS_Path_Buffer file_path = fs_path_buffer_new (proc_directory, s_context.default_allocator);
     fs_path_append (&file_path, str_view ("haystack"));
@@ -235,9 +235,22 @@ void examples (void)
     if (error_is_null (err) && file.metadata.extension == FS_EXT_TXT)
       $debug ("file loaded: ##\n%s##", (char *)file.buffer);
 
-    fs_path_buffer_free (&proc_path);
     fs_path_buffer_free (&file_path);
   }
+
+  // DYNLIB example
+  FS_Path_Buffer dynlib_path = fs_path_buffer_new (proc_directory, s_context.default_allocator);
+  fs_path_append (&dynlib_path, str_view ("lib"));
+  fs_path_append (&dynlib_path, str_view ("dynlib_test.so"));
+  
+  DYNLIB dynlib = dynlib_load (fs_path_from_buffer (dynlib_path));
+  typedef int (*multiply_proc)(int a, int b);
+  multiply_proc multiply = $dynlib_symbol (multiply_proc, dynlib, str_view ("multiply"));
+  if (multiply != NULL)
+    $debug ("%i * %i = %i", 5, 3, multiply (5, 3));
+
+  fs_path_buffer_free (&dynlib_path);
+  fs_path_buffer_free (&proc_path);
 }
 
 int main (void)

@@ -11,6 +11,7 @@
 #endif
 #include <time.h>
 #include <unistd.h>
+#include <dlfcn.h>
 #ifdef MACOS__
 #include <mach-o/dyld.h>
 #endif
@@ -25,6 +26,9 @@ void  *sys_realloc (void *thing, usize new_size);
 void   sys_free (void **p_thing);
 uint64 sys_time_now (void);
 void   sys_proc_path (char buffer[SYS_MAX_PATH_SIZE]);
+void *sys_load_dynlib (const char *path);
+void sys_unload_dynlib (void *handle);
+void *sys_dynlib_symbol (void *handle, const char *name);
 
 #ifdef MEC_IMPL
 void *sys_alloc (usize size)
@@ -97,6 +101,35 @@ void sys_proc_path (char buffer[SYS_MAX_PATH_SIZE])
 #else
   buffer[0] = '\0';
 #endif
+}
+
+void *sys_load_dynlib (const char *path)
+{
+#ifdef WINDOWS__
+  return (void *)LoadLibraryA (path);
+#elif defined (LINUX__) || defined (MACOS__)
+  return dlopen (path, RTLD_LAZY | RTLD_LOCAL);
+#endif
+  return NULL;
+}
+
+void sys_unload_dynlib (void *handle)
+{
+#if defined(_WIN32) || defined(_WIN64)
+  FreeLibrary ((HMODULE)handle);
+#elif defined (LINUX__) || defined (MACOS__)
+  dlclose (handle);
+#endif
+}
+
+void *sys_dynlib_symbol (void *handle, const char *name)
+{
+#ifdef WINDOWS__
+  return (void *)GetProcAddress ((HMODULE)handle, name);
+#elif defined(LINUX__) || defined(MACOS__)
+  return dlsym (handle, name);
+#endif
+  return NULL;
 }
 #endif // MEC_IMPL
 #endif // MEC_SYS_H

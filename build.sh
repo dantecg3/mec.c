@@ -24,3 +24,8 @@ echo "built $output/test"
 echo "creating needle.txt"
 mkdir -p "$output/haystack"
 echo "Found it!" > "$output/haystack/neddle.txt"
+
+echo "building dynlib_test.so"
+mkdir -p "$output/lib"
+cc $flags -shared -fPIC src/dynlib_test.c -o "$output/lib/dynlib_test.so"
+echo "built $output/lib/dynlib_test.so"

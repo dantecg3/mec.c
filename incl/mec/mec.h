@@ -18,5 +18,6 @@
 #include "sset.h"
 #include "reg.h"
 #include "fs.h"
+#include "dynlib.h"
 
 #endif // MEC_H
