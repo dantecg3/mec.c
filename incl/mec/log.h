@@ -7,7 +7,7 @@
 #include <stdarg.h>
 
 #define LOG_MAX_SINKS           6
-#define LOG_MSG_BUFFER_CAPACITY 128
+#define LOG_MSG_BUFFER_CAPACITY 1024
 
 typedef uint8 LOG_Level;
 typedef void (*LOG_Sink_Proc) (void *context, LOG_Level level, const char *msg);
