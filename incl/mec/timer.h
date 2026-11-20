@@ -12,7 +12,7 @@ struct TIMER
   uint64 snap;  // ns
 };
 
-static inline TIMER timer ()
+static inline TIMER timer (void)
 {
   uint64 now = sys_time_now ();
   return (TIMER){

@@ -251,6 +251,12 @@ void examples (void)
 
   fs_path_buffer_free (&dynlib_path);
   fs_path_buffer_free (&proc_path);
+
+  // EMBED example
+  FS_File readme = $embed ("README.md");
+  
+  if (readme.buffer != NULL)
+    $debug (SV_FMT, readme.metadata.size, (char *)readme.buffer);
 }
 
 int main (void)

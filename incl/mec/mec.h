@@ -19,5 +19,6 @@
 #include "reg.h"
 #include "fs.h"
 #include "dynlib.h"
+#include "embed.h"
 
 #endif // MEC_H

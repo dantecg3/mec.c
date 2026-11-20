@@ -79,7 +79,7 @@ FS_File fs_load_file (FS_Path path, MEM_Allocator alloc);
 void    fs_free_file (FS_File *p_file);
 
 #ifdef MEC_IMPL
-static inline const char *fs_separator ()
+static inline const char *fs_separator (void)
 {
 #ifdef WINDOWS__
   return "\\";

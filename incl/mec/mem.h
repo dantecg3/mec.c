@@ -67,7 +67,7 @@ struct MEM_Allocator
   MEM_Free_Proc    free_proc;
 };
 
-MEM_Allocator mem_default_allocator ();
+MEM_Allocator mem_default_allocator (void);
 
 void *mem_new (usize size, MEM_Allocator alloc);
 void *mem_new_array (usize stride, usize count, MEM_Allocator alloc);
@@ -114,7 +114,7 @@ static inline void mem_default_free (void $unused *context, void **p_thing)
   sys_free (p_thing);
 }
 
-MEM_Allocator mem_default_allocator ()
+MEM_Allocator mem_default_allocator (void)
 {
   return (MEM_Allocator){
     .context      = NULL,

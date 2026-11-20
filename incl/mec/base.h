@@ -104,7 +104,7 @@ $static_assert (sizeof (usize) == 8);
   do                                           \
     {                                          \
       if (expr)                                \
-        $panic ("$require (" #expr "): " msg); \
+        $panic ("$trap (" #expr "): " msg); \
     }                                          \
   while (0)
 

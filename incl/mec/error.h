@@ -70,7 +70,7 @@ static inline ERROR error (ERROR_Code code, const char *msg)
   };
 }
 
-static inline ERROR error_null ()
+static inline ERROR error_null (void)
 {
   return (ERROR){
     .code = ERROR_NONE,

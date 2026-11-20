@@ -2,7 +2,7 @@
 set -e
 
 mode="${1:-debug}"
-flags="-std=c99 -Wall -Wextra -pedantic -Iincl"
+flags="-std=c99 -Wall -Wextra -pedantic -Wno-dollar-in-identifier-extension -Wno-gnu-statement-expression -Iincl"
 
 case "$mode" in
     debug)    flags="$flags -O0 -g" ;;
@@ -17,7 +17,7 @@ output="bin/${mode}"
 echo "building 'test.c' ($mode)"
 
 mkdir -p "$output"
-cc $flags src/*.c -o "$output/test"
+clang $flags src/*.c -o "$output/test"
 
 echo "built $output/test"
 
@@ -27,5 +27,5 @@ echo "Found it!" > "$output/haystack/neddle.txt"
 
 echo "building dynlib_test.so"
 mkdir -p "$output/lib"
-cc $flags -shared -fPIC src/dynlib_test.c -o "$output/lib/dynlib_test.so"
+clang $flags -shared -fPIC src/dynlib_test.c -o "$output/lib/dynlib_test.so"
 echo "built $output/lib/dynlib_test.so"

@@ -71,7 +71,7 @@ static inline $unused bool mec_pop_error (ERROR *out)
   return true;
 }
 
-static inline $unused void mec_drain_errors ()
+static inline $unused void mec_drain_errors (void)
 {
   $assert (s_context.error_stack_sink != NULL, "");
   
